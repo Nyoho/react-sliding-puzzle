@@ -52,6 +52,19 @@ export function shuffle(tiles) {
     : shuffle(shuffledTiles);
 }
 
+export function shuffle_with_actions(tiles, actions) {
+  let shuffledTiles = tiles;
+  const n = actions.length;
+
+  for (let i=0; i < 100; i++) {
+    shuffledTiles = act(shuffledTiles, actions[Math.floor(Math.random() * n)])
+  }
+  
+  return isSolvable(shuffledTiles) && !isSolved(shuffledTiles)
+    ? shuffledTiles
+    : shuffle_with_actions(shuffledTiles, actions);
+}
+
 export function canSwap(srcIndex, destIndex) {
   const { row: srcRow, col: srcCol } = getMatrixPosition(srcIndex);
   const { row: destRow, col: destCol } = getMatrixPosition(destIndex);
@@ -61,6 +74,18 @@ export function canSwap(srcIndex, destIndex) {
 export function swap(tiles, src, dest) {
   const tilesResult = [...tiles];
   [tilesResult[src], tilesResult[dest]] = [tilesResult[dest], tilesResult[src]];
+  return tilesResult;
+}
+
+export function act(tiles, action) {
+  const tilesResult = [...tiles];
+  const perm = action.perm;
+  const dest = [...perm.slice(1,perm.length),perm[0]];
+
+  for (let i=0; i < perm.length; i++) {
+    tilesResult[dest[i]] = tiles[perm[i]]
+  }
+  // [tilesResult[src], tilesResult[dest]] = [tilesResult[dest], tilesResult[src]];
   return tilesResult;
 }
 
