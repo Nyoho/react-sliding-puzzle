@@ -19,9 +19,8 @@ function App() {
 
   return (
     <div className="App">
-      <h1>React sliding puzzle</h1>
-      <Board imgUrl={imgUrl} />
-      <input value={imgUrl} onChange={handleImageChange} />
+      <h1>たのしいぐるぐるゲーム</h1>
+      <Board />
     </div>
   );
 }
