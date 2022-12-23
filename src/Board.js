@@ -4,12 +4,12 @@ import { TILE_COUNT, GRID_SIZE, BOARD_SIZE } from "./constants"
 import { canSwap, shuffle_with_actions, swap, act, isSolved } from "./helpers"
 
 const actions = [
-  {name: "a ↪️️", perm: [4,5,1,0]},
-  {name: "a ↩️", perm: [0,1,5,4]},
-  {name: "b ↪️️️", perm: [9,10,6,5]},
-  {name: "b ↩️", perm: [5,6,10,9]},
-  {name: "c ↪️️️", perm: [6,7,3,2]},
-  {name: "c ↩️", perm: [2,3,7,6]},
+  {name: "a ↪️️", perm: [4,5,1,0], height: 0},
+  {name: "a ↩️", perm: [0,1,5,4], height: 0},
+  {name: "b ↪️️️", perm: [9,10,6,5], height: 50},
+  {name: "b ↩️", perm: [5,6,10,9], height: 50},
+  {name: "c ↪️️️", perm: [6,7,3,2], height: 0},
+  {name: "c ↩️", perm: [2,3,7,6], height: 0},
 ]
 
 function Board() {
@@ -78,11 +78,12 @@ function Board() {
           />
         ))}
       </ul>
-      {hasWon && isStarted ? <>🎉🎉解けﾀ━━━(ﾟ∀ﾟ)━━━!!🎉🎉</> : <>.</>}
+      {hasWon && isStarted ? <>🎉🎉解けﾀ━━━(ﾟ∀ﾟ)━━━!!🎉🎉</> : <>⁠</>}
       <div className="controller">
         {actions.map(
           (a,i) =>
-          <button onClick={() => handleActButtonClick(i)}>{a.name}️</button>
+          <button style={{height: '80px', verticalAlign: `-${a.height}px`}}
+                  onClick={() => handleActButtonClick(i)}>{a.name}️</button>
         )}
       </div>
       {!isStarted ?
