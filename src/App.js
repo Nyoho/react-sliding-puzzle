@@ -19,7 +19,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1>たのしいぐるぐるゲーム</h1>
+      <header>
+        <h1>たのしいぐるぐるゲーム</h1>
+      </header>
       <Board />
     </div>
   );

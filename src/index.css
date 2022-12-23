@@ -6,9 +6,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-  background: #111;
-  color: white;
+  background: #F3F3F3;
+  color: black;
   touch-action: manipulation;
+}
+
+body {
+    border: 8px solid #FBE74D;
+    border-top: 0;
+    box-sizing: border-box;
+}
+
+header {
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    background: #FBE74D;
+    margin: 0;
+    padding: 8px;
 }
 
 code {
@@ -18,7 +35,8 @@ code {
 .App {
   display: grid;
   place-items: center;
-  height: 100vh;
+  align-content: space-between;
+  height: 100svh;
 }
 h1 {
   margin: 0;

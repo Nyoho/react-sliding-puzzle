@@ -59,7 +59,7 @@ function Board() {
   const pieceHeight = Math.round(BOARD_SIZE / GRID_SIZE);
   const style = {
     width: BOARD_SIZE,
-    height: BOARD_SIZE,
+    height: BOARD_SIZE / GRID_SIZE * (TILE_COUNT / GRID_SIZE),
   };
   const hasWon = isSolved(tiles)
 
