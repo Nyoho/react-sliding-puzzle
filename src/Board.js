@@ -55,6 +55,50 @@ function Board() {
     setIsStarted(true)
   }
 
+  const handleSwipe = (direction, index) => {
+    const swipeData = [
+      [0, 'x-', 0],
+      [0, 'x+', 1],
+      [0, 'y-', 1],
+      [0, 'y+', 0],
+      [1, 'x-', 0],
+      [1, 'x+', 1],
+      [1, 'y-', 0],
+      [1, 'y+', 1],
+      [2, 'x-', 4],
+      [2, 'x+', 5],
+      [2, 'y-', 5],
+      [2, 'y+', 4],
+      [3, 'x-', 4],
+      [3, 'x+', 5],
+      [3, 'y-', 4],
+      [3, 'y+', 5],
+      [4, 'x-', 1],
+      [4, 'x+', 0],
+      [4, 'y-', 1],
+      [4, 'y+', 0],
+      [7, 'x-', 5],
+      [7, 'x+', 4],
+      [7, 'y-', 4],
+      [7, 'y+', 5],
+      [9, 'x-', 3],
+      [9, 'x+', 2],
+      [9, 'y-', 3],
+      [9, 'y+', 2],
+      [10, 'x-', 3],
+      [10, 'x+', 2],
+      [10, 'y-', 2],
+      [10, 'y+', 3],
+    ];
+
+    const found = swipeData.find(e => e[0] == index && e[1] == direction)
+
+    if (found) {
+      const action = actions[found[2]]
+      actTiles(action)
+    }
+  }
+  
   const pieceWidth = Math.round(BOARD_SIZE / GRID_SIZE);
   const pieceHeight = Math.round(BOARD_SIZE / GRID_SIZE);
   const style = {
@@ -75,6 +119,7 @@ function Board() {
             width={pieceWidth}
             height={pieceHeight}
             handleTileClick={handleTileClick}
+            handleSwipe={handleSwipe}
           />
         ))}
       </ul>
