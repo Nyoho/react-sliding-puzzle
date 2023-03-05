@@ -18,7 +18,7 @@ function Tile(props) {
   };
 
   return <motion.li
-           animate={{ x:visualPos.x, y: visualPos.y}}
+           animate={{ x: visualPos.x, y: visualPos.y}}
            transition={{ ease: 'backOut' }}
            style={{
              ...tileStyle,
