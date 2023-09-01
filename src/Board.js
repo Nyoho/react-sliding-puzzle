@@ -13,7 +13,7 @@ const actions = [
 ]
 
 function Board() {
-  const imgUrl = 'image2.png';
+  const imgUrl = 'image2.jpg';
   const [tiles, setTiles] = useState([...Array(TILE_COUNT).keys()]);
   const [isStarted, setIsStarted] = useState(false);
   console.log('is started:', isStarted)
