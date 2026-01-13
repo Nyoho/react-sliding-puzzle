@@ -108,7 +108,7 @@ function Board() {
   const hasWon = isSolved(tiles)
 
   return (
-    <>
+    <div className="game-area">
       <ul style={style} className="board">
         {tiles.map((tile, index) => (
           <Tile
@@ -123,18 +123,29 @@ function Board() {
           />
         ))}
       </ul>
-      {hasWon && isStarted ? <>🎉🎉解けﾀ━━━(ﾟ∀ﾟ)━━━!!🎉🎉</> : <>⁠</>}
-      <div className="controller">
-        {actions.map(
-          (a,i) =>
-          <button style={{height: '80px', verticalAlign: `-${a.height}px`}}
-                  onClick={() => handleActButtonClick(i)}>{a.name}️</button>
-        )}
+      <div className="win-message">
+        {hasWon && isStarted && '🎉🎉解けﾀ━━━(ﾟ∀ﾟ)━━━!!🎉🎉'}
       </div>
-      {!isStarted ?
-        (<button onClick={() => handleStartClick()}>Start game</button>) :
-        (<button onClick={() => handleShuffleClick()}>Restart game</button>)}
-    </>
+      <div className="controls">
+        <div className="controller">
+          <div className="btn-group btn-group-a">
+            <button className="action-btn" onClick={() => handleActButtonClick(0)}>a↺</button>
+            <button className="action-btn" onClick={() => handleActButtonClick(1)}>a↻</button>
+          </div>
+          <div className="btn-group btn-group-b">
+            <button className="action-btn" onClick={() => handleActButtonClick(2)}>b↺</button>
+            <button className="action-btn" onClick={() => handleActButtonClick(3)}>b↻</button>
+          </div>
+          <div className="btn-group btn-group-c">
+            <button className="action-btn" onClick={() => handleActButtonClick(4)}>c↺</button>
+            <button className="action-btn" onClick={() => handleActButtonClick(5)}>c↻</button>
+          </div>
+        </div>
+        <button className="start-btn" onClick={isStarted ? handleShuffleClick : handleStartClick}>
+          {isStarted ? 'Restart' : 'Start'}
+        </button>
+      </div>
+    </div>
   );
 }
 

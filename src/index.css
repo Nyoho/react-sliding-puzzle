@@ -12,39 +12,48 @@ body {
 }
 
 body {
-    border: 8px solid #FBE74D;
-    border-top: 0;
-    box-sizing: border-box;
+  border: 8px solid #FBE74D;
+  border-top: 0;
+  box-sizing: border-box;
 }
 
 header {
-    width: 100%;
+  width: 100%;
 }
 
 h1 {
-    text-align: center;
-    background: #FBE74D;
-    margin: 0;
-    padding: 8px;
+  text-align: center;
+  background: #FBE74D;
+  margin: 0;
+  padding: 8px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
 .App {
-  display: grid;
-  place-items: center;
-  align-content: space-between;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: 100svh;
 }
-h1 {
-  margin: 0;
+
+/* board + win-message + controls をひとつの単位としてまとめる */
+.game-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  flex: 1;
 }
+
 .board {
   position: relative;
   padding: 0;
 }
+
 .tile {
   position: absolute;
   list-style: none;
@@ -53,6 +62,112 @@ h1 {
   place-items: center;
   font-size: 20px;
 }
-button {
-    height: 44px;
+
+.win-message {
+  font-size: 20px;
+}
+
+/* ── controls wrapper ── */
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 8px;
+}
+
+/* ── action button groups ── */
+.controller {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* min() で画面幅に収まらない場合はスケールダウン */
+  width: min(320px, calc(100vw - 32px));
+}
+
+.btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+/* b グループはボード中段に対応するため少し下にオフセット */
+.btn-group-b {
+  padding-top: 28px;
+}
+
+.action-btn {
+  /* 48px×3グループ×2ボタン+ギャップ = 306px → 320pxに収まる */
+  width: 48px;
+  height: 64px;
+  border-radius: 14px;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+  transition: transform 80ms, box-shadow 80ms;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.action-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn-group-a .action-btn { background: #FBE74D; color: #222; }
+.btn-group-b .action-btn { background: #ec6f66; color: #fff; }
+.btn-group-c .action-btn { background: #4ECDC4; color: #222; }
+
+/* ── start / restart button ── */
+.start-btn {
+  min-width: 160px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 26px;
+  border: none;
+  background: #333;
+  color: #FBE74D;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 80ms, box-shadow 80ms;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  letter-spacing: 0.04em;
+}
+
+.start-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ── 横長レイアウト ── */
+@media (orientation: landscape) {
+  /* ヘッダーを小さくして縦スペースを確保 */
+  h1 {
+    font-size: 13px;
+    padding: 3px 8px;
+  }
+
+  /* ゲームエリア全体を縮小して縦に収める */
+  .game-area {
+    flex: none;
+    zoom: 0.7;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  /* 横長では勝利メッセージを非表示（縦スペース節約） */
+  .win-message {
+    display: none;
+  }
+
+  .controls {
+    gap: 8px;
+    padding-bottom: 0;
+  }
 }
