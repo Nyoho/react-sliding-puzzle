@@ -1,11 +1,28 @@
 import React from "react";
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { getMatrixPosition, getVisualPosition } from "./helpers";
-import { TILE_COUNT, GRID_SIZE, BOARD_SIZE } from "./constants"
+import { GRID_SIZE, BOARD_SIZE } from "./constants"
+
+// Returns how far this tile should visually move based on current drag progress
+function getDragOffset(index, dragInfo, width, height) {
+  if (!dragInfo?.action || dragInfo.progress <= 0) return { x: 0, y: 0 };
+
+  const perm = dragInfo.action.perm;
+  const permIdx = perm.indexOf(index);
+  if (permIdx === -1) return { x: 0, y: 0 };
+
+  const dest = [...perm.slice(1), perm[0]];
+  const { row: srcRow, col: srcCol } = getMatrixPosition(index);
+  const { row: destRow, col: destCol } = getMatrixPosition(dest[permIdx]);
+
+  return {
+    x: (destCol - srcCol) * width * dragInfo.progress,
+    y: (destRow - srcRow) * height * dragInfo.progress,
+  };
+}
 
 function Tile(props) {
-  const { tile, index, width, height, handleTileClick, imgUrl, handleSwipe } = props;
+  const { tile, index, width, height, imgUrl, dragInfo, onDragStart, onDragMove, onDragEnd } = props;
   const { row, col } = getMatrixPosition(index);
   const visualPos = getVisualPosition(row, col, width, height);
   const tileStyle = {
@@ -14,54 +31,44 @@ function Tile(props) {
     backgroundImage: `url(${imgUrl})`,
     backgroundSize: `${BOARD_SIZE}px`,
     backgroundPosition: `${-(BOARD_SIZE / GRID_SIZE) * (tile % GRID_SIZE)}px ${-(BOARD_SIZE / GRID_SIZE) * (Math.floor(tile / GRID_SIZE))}px`,
-    // backgroundPosition: `${(100 / GRID_SIZE) * ((tile % GRID_SIZE))}% ${(100 / TILE_COUNT * GRID_SIZE) * (1 + Math.floor(tile / GRID_SIZE))}%`,
     border: 'dashed 1px #999',
     touchAction: 'none',
+    cursor: 'grab',
   };
 
-  const [touchPosition, setTouchPosition] = useState(null)
-  const handleTouchStart = (e) => {
-    setTouchPosition({ x: e.touches[0].clientX, y: e.touches[0].clientY })
-  }
-  const handleTouchMove = (e) => {
-    const touchDown = touchPosition
+  const offset = getDragOffset(index, dragInfo, width, height);
+  const animX = visualPos.x + offset.x;
+  const animY = visualPos.y + offset.y;
+  const isDragging = dragInfo !== null;
 
-    if(touchDown === null) {
-      return
-    }
+  const handlePointerDown = (e) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    onDragStart(index, e.clientX, e.clientY);
+  };
 
-    const diffX = e.touches[0].clientX - touchDown.x
-    const diffY = e.touches[0].clientY - touchDown.y
+  const handlePointerMove = (e) => {
+    onDragMove(index, e.clientX, e.clientY);
+  };
 
-    if (diffX > 5) {
-      handleSwipe('x+', index)
-    }
-    if (diffX < -5) {
-      handleSwipe('x-', index)
-    }
-    if (diffY > 5) {
-      handleSwipe('y+', index)
-    }
-    if (diffY < -5) {
-      handleSwipe('y-', index)
-    }
+  const handlePointerUp = () => {
+    onDragEnd(index);
+  };
 
-    setTouchPosition(null)
-  }
-
-  return <motion.li
-           initial={{ x: visualPos.x, y: visualPos.y}}
-           animate={{ x: visualPos.x, y: visualPos.y}}
-           transition={{ ease: 'backOut' }}
-           style={{
-             ...tileStyle,
-           }}
-           className="tile"
-           onTouchStart={handleTouchStart}
-           onTouchMove={handleTouchMove}
-         >
-           {!imgUrl && `${tile + 1}`}
-         </motion.li>
+  return (
+    <motion.li
+      initial={{ x: visualPos.x, y: visualPos.y }}
+      animate={{ x: animX, y: animY }}
+      transition={isDragging ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 35 }}
+      style={tileStyle}
+      className="tile"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
+      {!imgUrl && `${tile + 1}`}
+    </motion.li>
+  );
 }
 
 export default Tile;
