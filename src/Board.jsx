@@ -27,6 +27,7 @@ function Board() {
   const imgUrl = 'image2.jpg';
   const [tiles, setTiles] = useState([...Array(TILE_COUNT).keys()]);
   const [isStarted, setIsStarted] = useState(false);
+  const [displayMode, setDisplayMode] = useState(0); // 0: 画像, 1: 画像+番号, 2: 番号のみ
   const [dragInfo, setDragInfo] = useState(null);
   // ref で常に最新の dragInfo を参照 (stale closure 対策)
   const dragInfoRef = useRef(null);
@@ -155,6 +156,7 @@ function Board() {
             height={pieceHeight}
             handleTileClick={handleTileClick}
             dragInfo={dragInfo}
+            displayMode={displayMode}
             onDragStart={handleDragStart}
             onDragMove={handleDragMove}
             onDragEnd={handleDragEnd}
@@ -179,9 +181,25 @@ function Board() {
             <button className="action-btn" onClick={() => handleActButtonClick(5)}>c↻</button>
           </div>
         </div>
-        <button className="start-btn" onClick={isStarted ? handleShuffleClick : handleStartClick}>
-          {isStarted ? 'Restart' : 'Start'}
-        </button>
+        <div className="bottom-controls">
+          <div className="mode-toggle">
+            <button
+              className={`mode-btn${displayMode === 0 ? ' active' : ''}`}
+              onClick={() => setDisplayMode(0)}
+            >絵のみ</button>
+            <button
+              className={`mode-btn${displayMode === 1 ? ' active' : ''}`}
+              onClick={() => setDisplayMode(1)}
+            >番号表示</button>
+            <button
+              className={`mode-btn${displayMode === 2 ? ' active' : ''}`}
+              onClick={() => setDisplayMode(2)}
+            >番号のみ</button>
+          </div>
+          <button className="start-btn" onClick={isStarted ? handleShuffleClick : handleStartClick}>
+            {isStarted ? 'Restart' : 'Start'}
+          </button>
+        </div>
       </div>
     </div>
   );

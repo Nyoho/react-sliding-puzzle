@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { getMatrixPosition, getVisualPosition } from "./helpers";
 import { GRID_SIZE, BOARD_SIZE } from "./constants"
 
-// Returns how far this tile should visually move based on current drag progress
 function getDragOffset(index, dragInfo, width, height) {
   if (!dragInfo?.action || dragInfo.progress <= 0) return { x: 0, y: 0 };
 
@@ -22,15 +21,18 @@ function getDragOffset(index, dragInfo, width, height) {
 }
 
 function Tile(props) {
-  const { tile, index, width, height, imgUrl, dragInfo, onDragStart, onDragMove, onDragEnd } = props;
+  const { tile, index, width, height, imgUrl, dragInfo, displayMode, onDragStart, onDragMove, onDragEnd } = props;
   const { row, col } = getMatrixPosition(index);
   const visualPos = getVisualPosition(row, col, width, height);
+
   const tileStyle = {
     width: `calc(${BOARD_SIZE}px / ${GRID_SIZE})`,
     height: `calc(${BOARD_SIZE}px / ${GRID_SIZE})`,
-    backgroundImage: `url(${imgUrl})`,
-    backgroundSize: `${BOARD_SIZE}px`,
-    backgroundPosition: `${-(BOARD_SIZE / GRID_SIZE) * (tile % GRID_SIZE)}px ${-(BOARD_SIZE / GRID_SIZE) * (Math.floor(tile / GRID_SIZE))}px`,
+    ...(displayMode !== 2 && {
+      backgroundImage: `url(${imgUrl})`,
+      backgroundSize: `${BOARD_SIZE}px`,
+      backgroundPosition: `${-(BOARD_SIZE / GRID_SIZE) * (tile % GRID_SIZE)}px ${-(BOARD_SIZE / GRID_SIZE) * (Math.floor(tile / GRID_SIZE))}px`,
+    }),
     border: 'dashed 1px #999',
     touchAction: 'none',
     cursor: 'grab',
@@ -66,7 +68,8 @@ function Tile(props) {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      {!imgUrl && `${tile + 1}`}
+      {displayMode === 1 && <span className="tile-number">{tile + 1}</span>}
+      {displayMode === 2 && <span className="tile-number-large">{tile + 1}</span>}
     </motion.li>
   );
 }

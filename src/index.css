@@ -120,6 +120,63 @@ code {
 .btn-group-b .action-btn { background: #ec6f66; color: #fff; }
 .btn-group-c .action-btn { background: #4ECDC4; color: #222; }
 
+/* ── tile number overlay (mode 1) ── */
+.tile-number {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* ── tile number only (mode 2) ── */
+.tile-number-large {
+  font-size: 26px;
+  font-weight: bold;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* ── display mode toggle ── */
+.bottom-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.mode-btn {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 17px;
+  border: 2px solid #333;
+  background: transparent;
+  color: #333;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 80ms, color 80ms;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.mode-btn.active {
+  background: #333;
+  color: #FBE74D;
+}
+
 /* ── start / restart button ── */
 .start-btn {
   min-width: 160px;
