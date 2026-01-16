@@ -1,36 +1,43 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-  background: #F3F3F3;
-  color: black;
-  touch-action: manipulation;
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@800;900&display=swap');
+
+:root {
+  --bg: #FFFAED;
+  --ink: #1a1a1a;
+  --accent-a: #FFD93D;
+  --accent-b: #FF6B6B;
+  --accent-c: #6BCB77;
 }
 
 body {
-  border: 8px solid #FBE74D;
-  border-top: 0;
+  margin: 0;
+  font-family: 'Fredoka', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, #e0cba8 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  touch-action: manipulation;
+  border: 5px solid var(--ink);
   box-sizing: border-box;
 }
 
 header {
   width: 100%;
+  background: var(--accent-b);
 }
 
 h1 {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 26px;
   text-align: center;
-  background: #FBE74D;
   margin: 0;
-  padding: 8px;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  padding: 10px 8px;
+  color: #fff;
+  letter-spacing: 0.02em;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.18);
 }
 
 .App {
@@ -40,7 +47,6 @@ code {
   height: 100svh;
 }
 
-/* board + win-message + controls をひとつの単位としてまとめる */
 .game-area {
   display: flex;
   flex-direction: column;
@@ -52,12 +58,16 @@ code {
 .board {
   position: relative;
   padding: 0;
+  border: 3px solid var(--ink);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 6px 6px 0 var(--ink);
 }
 
 .tile {
   position: absolute;
   list-style: none;
-  background: #ec6f66;
+  background: linear-gradient(145deg, #ffe8c8, #ffd9aa);
   display: grid;
   place-items: center;
   font-size: 20px;
@@ -65,9 +75,9 @@ code {
 
 .win-message {
   font-size: 20px;
+  font-weight: 700;
 }
 
-/* ── controls wrapper ── */
 .controls {
   display: flex;
   flex-direction: column;
@@ -76,12 +86,10 @@ code {
   padding-bottom: 8px;
 }
 
-/* ── action button groups ── */
 .controller {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  /* min() で画面幅に収まらない場合はスケールダウン */
   width: min(320px, calc(100vw - 32px));
 }
 
@@ -90,21 +98,19 @@ code {
   gap: 6px;
 }
 
-/* b グループはボード中段に対応するため少し下にオフセット */
 .btn-group-b {
   padding-top: 28px;
 }
 
 .action-btn {
-  /* 48px×3グループ×2ボタン+ギャップ = 306px → 320pxに収まる */
   width: 48px;
   height: 64px;
   border-radius: 14px;
-  border: none;
+  border: 2.5px solid var(--ink);
+  font-family: 'Fredoka', sans-serif;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
   transition: transform 80ms, box-shadow 80ms;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -112,38 +118,55 @@ code {
 }
 
 .action-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  transform: translate(3px, 3px);
 }
 
-.btn-group-a .action-btn { background: #FBE74D; color: #222; }
-.btn-group-b .action-btn { background: #ec6f66; color: #fff; }
-.btn-group-c .action-btn { background: #4ECDC4; color: #222; }
+.btn-group-a .action-btn {
+  background: var(--accent-a);
+  color: var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.btn-group-a .action-btn:active { box-shadow: none; }
 
-/* ── tile number overlay (mode 1) ── */
+.btn-group-b .action-btn {
+  background: var(--accent-b);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.btn-group-b .action-btn:active { box-shadow: none; }
+
+.btn-group-c .action-btn {
+  background: var(--accent-c);
+  color: var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.btn-group-c .action-btn:active { box-shadow: none; }
+
+/* tile number overlay (mode 1) */
 .tile-number {
   position: absolute;
   top: 4px;
   left: 5px;
   background: rgba(0, 0, 0, 0.55);
   color: #fff;
+  font-family: 'Fredoka', sans-serif;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1;
   padding: 2px 5px;
   border-radius: 4px;
   pointer-events: none;
 }
 
-/* ── tile number only (mode 2) ── */
+/* tile number only (mode 2) */
 .tile-number-large {
-  font-size: 26px;
-  font-weight: bold;
-  color: #fff;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: #5a3a1a;
   pointer-events: none;
 }
 
-/* ── display mode toggle ── */
 .bottom-controls {
   display: flex;
   flex-direction: column;
@@ -160,11 +183,12 @@ code {
   height: 34px;
   padding: 0 14px;
   border-radius: 17px;
-  border: 2px solid #333;
+  border: 2px solid var(--ink);
   background: transparent;
-  color: #333;
+  color: var(--ink);
+  font-family: 'Fredoka', sans-serif;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
   transition: background 80ms, color 80ms;
   -webkit-tap-highlight-color: transparent;
@@ -173,44 +197,41 @@ code {
 }
 
 .mode-btn.active {
-  background: #333;
-  color: #FBE74D;
+  background: var(--ink);
+  color: #fff;
 }
 
-/* ── start / restart button ── */
 .start-btn {
   min-width: 160px;
   height: 52px;
   padding: 0 24px;
-  border-radius: 26px;
-  border: none;
-  background: #333;
-  color: #FBE74D;
-  font-size: 18px;
-  font-weight: bold;
+  border-radius: 14px;
+  border: 2.5px solid var(--ink);
+  background: var(--accent-c);
+  color: var(--ink);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 4px 4px 0 var(--ink);
   transition: transform 80ms, box-shadow 80ms;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   user-select: none;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .start-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
 }
 
-/* ── 横長レイアウト ── */
 @media (orientation: landscape) {
-  /* ヘッダーを小さくして縦スペースを確保 */
   h1 {
     font-size: 13px;
     padding: 3px 8px;
   }
 
-  /* ゲームエリア全体を縮小して縦に収める */
   .game-area {
     flex: none;
     zoom: 0.7;
@@ -218,7 +239,6 @@ code {
     gap: 4px;
   }
 
-  /* 横長では勝利メッセージを非表示（縦スペース節約） */
   .win-message {
     display: none;
   }

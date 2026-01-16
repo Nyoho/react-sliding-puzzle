@@ -33,7 +33,7 @@ function Tile(props) {
       backgroundSize: `${BOARD_SIZE}px`,
       backgroundPosition: `${-(BOARD_SIZE / GRID_SIZE) * (tile % GRID_SIZE)}px ${-(BOARD_SIZE / GRID_SIZE) * (Math.floor(tile / GRID_SIZE))}px`,
     }),
-    border: 'dashed 1px #999',
+    border: '1px solid rgba(0, 0, 0, 0.12)',
     touchAction: 'none',
     cursor: 'grab',
   };
