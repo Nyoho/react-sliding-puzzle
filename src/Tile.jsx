@@ -60,7 +60,11 @@ function Tile(props) {
     <motion.li
       initial={{ x: visualPos.x, y: visualPos.y }}
       animate={{ x: animX, y: animY }}
-      transition={isDragging ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 35 }}
+      // ドラッグ中は即座追従、それ以外は spring アニメーション
+      transition={isDragging
+        ? { duration: 0 }
+        : { type: 'spring', stiffness: 280, damping: 24 }
+      }
       style={tileStyle}
       className="tile"
       onPointerDown={handlePointerDown}

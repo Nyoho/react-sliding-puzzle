@@ -23,15 +23,16 @@ const swipeData = [
   [10, 'x-', 3], [10, 'x+', 2], [10, 'y-', 2], [10, 'y+', 3],
 ];
 
+// spring (stiffness:280, damping:24) の実効的な静止時間に合わせる
+const LOCK_MS = 160;
+
 function Board() {
   const imgUrl = 'image2.jpg';
   const [tiles, setTiles] = useState([...Array(TILE_COUNT).keys()]);
   const [isStarted, setIsStarted] = useState(false);
-  const [displayMode, setDisplayMode] = useState(0); // 0: 画像, 1: 画像+番号, 2: 番号のみ
+  const [displayMode, setDisplayMode] = useState(0);
   const [dragInfo, setDragInfo] = useState(null);
-  // ref で常に最新の dragInfo を参照 (stale closure 対策)
   const dragInfoRef = useRef(null);
-  // アニメーション中のロック（ref で同期的チェック）
   const isAnimatingRef = useRef(false);
   const animTimerRef = useRef(null);
 
@@ -40,12 +41,13 @@ function Board() {
     setDragInfo(value);
   };
 
-  const lockDuringAnimation = () => {
+  const commitAction = (action) => {
     isAnimatingRef.current = true;
     clearTimeout(animTimerRef.current);
     animTimerRef.current = setTimeout(() => {
       isAnimatingRef.current = false;
-    }, 100);
+    }, LOCK_MS);
+    setTiles(prevTiles => act(prevTiles, action));
   };
 
   const pieceWidth = Math.round(BOARD_SIZE / GRID_SIZE);
@@ -63,15 +65,9 @@ function Board() {
     }
   }
 
-  const actTiles = (action) => {
-    setTiles(prevTiles => act(prevTiles, action));
-    lockDuringAnimation();
-  }
-
   const handleActButtonClick = (actionID) => {
     if (isAnimatingRef.current) return;
-    setTiles(prevTiles => act(prevTiles, actions[actionID]));
-    lockDuringAnimation();
+    commitAction(actions[actionID]);
   }
 
   const handleTileClick = (index) => {
@@ -120,13 +116,10 @@ function Board() {
 
   const handleDragEnd = (tileIndex) => {
     const current = dragInfoRef.current;
-    // dragInfo が存在しない場合は何もしない
     if (!current) return;
-    // 即座にクリアして二重コミットを防ぐ
     updateDragInfo(null);
-    // 同じタイルのドラッグで、閾値を超えていればアクションを確定
     if (current.tileIndex === tileIndex && current.progress >= 0.5 && current.action) {
-      actTiles(current.action);
+      commitAction(current.action);
     }
   };
 
@@ -142,7 +135,6 @@ function Board() {
         style={style}
         className="board"
         onPointerUp={(e) => {
-          // タイル要素が pointerup を受け取れなかった場合の安全弁
           if (dragInfoRef.current) handleDragEnd(dragInfoRef.current.tileIndex);
         }}
       >
