@@ -21,7 +21,7 @@ function getDragOffset(index, dragInfo, width, height) {
 }
 
 function Tile(props) {
-  const { tile, index, width, height, imgUrl, dragInfo, displayMode, onDragStart, onDragMove, onDragEnd } = props;
+  const { tile, index, width, height, imgUrl, dragInfo, animDest, displayMode, onDragStart, onDragMove, onDragEnd } = props;
   const { row, col } = getMatrixPosition(index);
   const visualPos = getVisualPosition(row, col, width, height);
 
@@ -36,6 +36,7 @@ function Tile(props) {
     border: '1px solid rgba(0, 0, 0, 0.12)',
     touchAction: 'none',
     cursor: 'grab',
+    zIndex: (() => { const i = animDest ? animDest.indexOf(index) : -1; return i !== -1 ? 10 + i : 1; })(),
   };
 
   const offset = getDragOffset(index, dragInfo, width, height);

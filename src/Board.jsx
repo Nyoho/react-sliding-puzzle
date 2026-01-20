@@ -34,9 +34,11 @@ function Board() {
   const [isStarted, setIsStarted] = useState(false);
   const [displayMode, setDisplayMode] = useState(0);
   const [dragInfo, setDragInfo] = useState(null);
+  const [animDest, setAnimDest] = useState(null);
   const dragInfoRef = useRef(null);
   const isAnimatingRef = useRef(false);
   const animTimerRef = useRef(null);
+  const animPermTimerRef = useRef(null);
 
   const updateDragInfo = (value) => {
     dragInfoRef.current = value;
@@ -44,6 +46,10 @@ function Board() {
   };
 
   const commitAction = (action) => {
+    const dest = [...action.perm.slice(1), action.perm[0]];
+    setAnimDest(dest);
+    clearTimeout(animPermTimerRef.current);
+    animPermTimerRef.current = setTimeout(() => setAnimDest(null), 350);
     isAnimatingRef.current = true;
     clearTimeout(animTimerRef.current);
     animTimerRef.current = setTimeout(() => {
@@ -87,6 +93,7 @@ function Board() {
 
   const handleDragStart = (tileIndex, clientX, clientY) => {
     if (isAnimatingRef.current) return;
+    if (dragInfoRef.current !== null) return; // prevent second touch from overwriting active drag
     updateDragInfo({ tileIndex, startX: clientX, startY: clientY, action: null, direction: null, progress: 0 });
   };
 
@@ -150,6 +157,7 @@ function Board() {
             height={pieceHeight}
             handleTileClick={handleTileClick}
             dragInfo={dragInfo}
+            animDest={animDest}
             displayMode={displayMode}
             onDragStart={handleDragStart}
             onDragMove={handleDragMove}
