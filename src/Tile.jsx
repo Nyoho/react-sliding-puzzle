@@ -1,29 +1,15 @@
-import React from "react";
-import { motion } from 'framer-motion'
+import React, { useCallback } from "react";
 import { getMatrixPosition, getVisualPosition } from "./helpers";
 import { GRID_SIZE, BOARD_SIZE } from "./constants"
 
-function getDragOffset(index, dragInfo, width, height) {
-  if (!dragInfo?.action || dragInfo.progress <= 0) return { x: 0, y: 0 };
-
-  const perm = dragInfo.action.perm;
-  const permIdx = perm.indexOf(index);
-  if (permIdx === -1) return { x: 0, y: 0 };
-
-  const dest = [...perm.slice(1), perm[0]];
-  const { row: srcRow, col: srcCol } = getMatrixPosition(index);
-  const { row: destRow, col: destCol } = getMatrixPosition(dest[permIdx]);
-
-  return {
-    x: (destCol - srcCol) * width * dragInfo.progress,
-    y: (destRow - srcRow) * height * dragInfo.progress,
-  };
-}
-
 function Tile(props) {
-  const { tile, index, width, height, imgUrl, dragInfo, animDest, displayMode, onDragStart, onDragMove, onDragEnd } = props;
+  const { tile, index, width, height, imgUrl, displayMode, onDragStart, onDragMove, onDragEnd, tileRefCallback } = props;
   const { row, col } = getMatrixPosition(index);
   const visualPos = getVisualPosition(row, col, width, height);
+
+  const ref = useCallback((el) => {
+    if (tileRefCallback) tileRefCallback(tile, el);
+  }, [tile, tileRefCallback]);
 
   const tileStyle = {
     width: `calc(${BOARD_SIZE}px / ${GRID_SIZE})`,
@@ -36,13 +22,9 @@ function Tile(props) {
     border: '1px solid rgba(0, 0, 0, 0.12)',
     touchAction: 'none',
     cursor: 'grab',
-    zIndex: (() => { const i = animDest ? animDest.indexOf(index) : -1; return i !== -1 ? 10 + i : 1; })(),
+    transform: `translate(${visualPos.x}px, ${visualPos.y}px)`,
+    willChange: 'transform',
   };
-
-  const offset = getDragOffset(index, dragInfo, width, height);
-  const animX = visualPos.x + offset.x;
-  const animY = visualPos.y + offset.y;
-  const isDragging = dragInfo !== null;
 
   const handlePointerDown = (e) => {
     e.currentTarget.setPointerCapture(e.pointerId);
@@ -58,14 +40,8 @@ function Tile(props) {
   };
 
   return (
-    <motion.li
-      initial={{ x: visualPos.x, y: visualPos.y }}
-      animate={{ x: animX, y: animY }}
-      // ドラッグ中は即座追従、それ以外は spring アニメーション
-      transition={isDragging
-        ? { duration: 0 }
-        : { type: 'spring', stiffness: 280, damping: 24 }
-      }
+    <li
+      ref={ref}
       style={tileStyle}
       className="tile"
       onPointerDown={handlePointerDown}
@@ -75,7 +51,7 @@ function Tile(props) {
     >
       {displayMode === 1 && <span className="tile-number">{tile + 1}</span>}
       {displayMode === 2 && <span className="tile-number-large">{tile + 1}</span>}
-    </motion.li>
+    </li>
   );
 }
 
