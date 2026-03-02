@@ -3,6 +3,53 @@ import Tile from "./Tile";
 import { TILE_COUNT, GRID_SIZE, BOARD_SIZE } from "./constants"
 import { canSwap, shuffle_with_actions, swap, act, isSolved, getMatrixPosition, getVisualPosition } from "./helpers"
 
+const CONFETTI_COLORS = ['#FFD93D', '#FF6B6B', '#6BCB77', '#845EC2', '#FF9671', '#00C9A7', '#FFC75F', '#F9F871'];
+
+const CELEBRATE_FULL_DURATION = 3000;
+
+function CelebrationOverlay({ onPlayAgain }) {
+  const [minimized, setMinimized] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setMinimized(true), CELEBRATE_FULL_DURATION);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className={`celebration-overlay${minimized ? ' minimized' : ''}`}>
+      {!minimized && (
+        <>
+          <div className="celebration-starburst" />
+          {Array.from({ length: 40 }, (_, i) => (
+            <div
+              key={i}
+              className="confetti"
+              style={{
+                '--i': i,
+                '--color': CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+                left: `${(i * 2.5) % 100}%`,
+              }}
+            />
+          ))}
+        </>
+      )}
+      <div className="celebration-content">
+        {!minimized && (
+          <>
+            <div className="celebration-emoji">🎉</div>
+            <div className="celebration-title">CLEAR!</div>
+            <div className="celebration-subtitle">パズルクリア!</div>
+          </>
+        )}
+        {minimized && <span className="celebration-badge-label">🎉 CLEAR!</span>}
+        <button className="celebration-btn" onClick={onPlayAgain}>
+          もう一度あそぶ
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const actions = [
   {name: "a ↪️️", perm: [4,5,1,0], height: 0},
   {name: "a ↩️", perm: [0,1,5,4], height: 0},
@@ -367,6 +414,19 @@ function Board() {
     height: BOARD_SIZE / GRID_SIZE * (TILE_COUNT / GRID_SIZE),
   };
   const hasWon = isSolved(tiles)
+  const [showCelebration, setShowCelebration] = useState(false);
+
+  useEffect(() => {
+    if (hasWon && isStarted) {
+      const timer = setTimeout(() => setShowCelebration(true), 400);
+      return () => clearTimeout(timer);
+    }
+  }, [hasWon, isStarted]);
+
+  const handlePlayAgain = useCallback(() => {
+    setShowCelebration(false);
+    shuffleTiles();
+  }, [shuffleTiles]);
 
   return (
     <div className="game-area">
@@ -394,9 +454,7 @@ function Board() {
           />
         ))}
       </ul>
-      <div className="win-message">
-        {hasWon && isStarted && '🎉🎉解けﾀ━━━(ﾟ∀ﾟ)━━━!!🎉🎉'}
-      </div>
+      {showCelebration && <CelebrationOverlay onPlayAgain={handlePlayAgain} />}
       <div className="controls">
         <div className="controller">
           <div className="btn-group btn-group-a">

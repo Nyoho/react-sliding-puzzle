@@ -73,11 +73,6 @@ h1 {
   font-size: 20px;
 }
 
-.win-message {
-  font-size: 20px;
-  font-weight: 700;
-}
-
 .controls {
   display: flex;
   flex-direction: column;
@@ -239,12 +234,291 @@ h1 {
     gap: 4px;
   }
 
-  .win-message {
-    display: none;
-  }
-
   .controls {
     gap: 8px;
     padding-bottom: 0;
+  }
+
+  .celebration-content {
+    padding: 24px 32px;
+  }
+
+  .celebration-title {
+    font-size: 36px;
+  }
+
+  .celebration-subtitle {
+    font-size: 16px;
+  }
+
+  .celebration-btn {
+    height: 44px;
+    font-size: 16px;
+    min-width: 140px;
+  }
+
+  .minimized .celebration-content {
+    margin: 8px 8px 0 0;
+  }
+}
+
+/* ===== Celebration Overlay ===== */
+
+/* --- Full-screen state --- */
+.celebration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 26, 26, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: celebFadeIn 300ms ease-out both;
+  overflow: hidden;
+  transition: background 600ms ease, backdrop-filter 600ms ease;
+}
+
+/* --- Minimized state: clear backdrop, shrink to top-right --- */
+.celebration-overlay.minimized {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  pointer-events: none;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+@keyframes celebFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.celebration-starburst {
+  position: absolute;
+  width: 140vmax;
+  height: 140vmax;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: conic-gradient(
+    from 0deg,
+    var(--accent-a) 0deg,
+    transparent 15deg,
+    var(--accent-b) 30deg,
+    transparent 45deg,
+    var(--accent-c) 60deg,
+    transparent 75deg,
+    #845EC2 90deg,
+    transparent 105deg,
+    var(--accent-a) 120deg,
+    transparent 135deg,
+    var(--accent-b) 150deg,
+    transparent 165deg,
+    var(--accent-c) 180deg,
+    transparent 195deg,
+    #845EC2 210deg,
+    transparent 225deg,
+    var(--accent-a) 240deg,
+    transparent 255deg,
+    var(--accent-b) 270deg,
+    transparent 285deg,
+    var(--accent-c) 300deg,
+    transparent 315deg,
+    #845EC2 330deg,
+    transparent 345deg
+  );
+  opacity: 0.18;
+  animation: starburstSpin 12s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes starburstSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.confetti {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 10px;
+  background: var(--color);
+  opacity: 0;
+  animation: confettiFall 2.5s ease-in both;
+  animation-delay: calc(var(--i) * 60ms);
+  pointer-events: none;
+}
+
+.confetti:nth-child(5n+1) { border-radius: 50%; }
+.confetti:nth-child(5n+2) { border-radius: 2px; width: 8px; height: 14px; }
+.confetti:nth-child(5n+3) { border-radius: 0; transform: rotate(45deg); }
+.confetti:nth-child(5n+4) { border-radius: 50% 0; width: 12px; height: 8px; }
+.confetti:nth-child(5n+5) { width: 6px; height: 16px; border-radius: 3px; }
+
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(calc(720deg + var(--i) * 47deg)) scale(0.5);
+  }
+}
+
+/* --- Card (full) --- */
+.celebration-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 36px 48px;
+  background: var(--bg);
+  border: 3px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 8px 8px 0 var(--ink);
+  animation: bounceIn 500ms cubic-bezier(0.34, 1.56, 0.64, 1) 200ms both;
+  pointer-events: auto;
+  transition: padding 500ms ease, border-radius 500ms ease, box-shadow 500ms ease, margin 500ms ease;
+}
+
+/* --- Card (minimized badge) --- */
+.minimized .celebration-content {
+  flex-direction: row;
+  gap: 10px;
+  padding: 8px 14px;
+  margin: 12px 12px 0 0;
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 var(--ink);
+  animation: shrinkToCorner 500ms ease both;
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shrinkToCorner {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.celebration-emoji {
+  font-size: 56px;
+  line-height: 1;
+  animation: emojiPop 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 500ms both;
+}
+
+@keyframes emojiPop {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-20deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.celebration-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 52px;
+  color: var(--accent-b);
+  letter-spacing: 0.04em;
+  -webkit-text-stroke: 2px var(--ink);
+  text-shadow: 3px 3px 0 var(--ink);
+  animation: slamIn 400ms cubic-bezier(0.34, 1.56, 0.64, 1) 600ms both;
+}
+
+@keyframes slamIn {
+  from {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.celebration-subtitle {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  animation: fadeSlideUp 400ms ease-out 800ms both;
+}
+
+/* --- Badge label (minimized only) --- */
+.celebration-badge-label {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--accent-b);
+  -webkit-text-stroke: 1px var(--ink);
+  text-shadow: 1px 1px 0 var(--ink);
+  white-space: nowrap;
+}
+
+/* --- Button (shared) --- */
+.celebration-btn {
+  margin-top: 8px;
+  min-width: 180px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 14px;
+  border: 2.5px solid var(--ink);
+  background: var(--accent-a);
+  color: var(--ink);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--ink);
+  transition: transform 80ms, box-shadow 80ms, min-width 500ms ease,
+              height 500ms ease, font-size 500ms ease, padding 500ms ease, margin 500ms ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+  animation: fadeSlideUp 400ms ease-out 1000ms both;
+}
+
+.minimized .celebration-btn {
+  margin-top: 0;
+  min-width: auto;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 14px;
+  box-shadow: 2px 2px 0 var(--ink);
+  animation: none;
+}
+
+.celebration-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
